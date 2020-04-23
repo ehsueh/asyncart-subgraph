@@ -14,6 +14,8 @@ import {
 } from "../generated/Contract/Contract"
 import { Platform, Token, Account, SaleLog, BidLog, TransferLog } from "../generated/schema"
 
+const PLATFORM_ID = "async-art-1.0"
+
 export function handleApproval(event: Approval): void {
   // Entities can be loaded from the store using a string ID; this ID
   // needs to be unique across all entities of the same type
@@ -82,7 +84,7 @@ export function handleApprovalForAll(event: ApprovalForAll): void {}
 
 export function handleBidProposed(event: BidProposed): void {
 
-  let tokenId = event.params.tokenId
+  let tokenId = event.params.tokenId.toString()
   let timestamp = event.block.timestamp
   let token = Token.load(tokenId)
 
@@ -92,9 +94,9 @@ export function handleBidProposed(event: BidProposed): void {
     let bidder = loadOrCreateAccount(event.params.bidder)
 
     // Create a new bid log entry with tokenId-bidder-timestamp being the id
-    let bid = new BidLog(tokenId.toString() + '_' + bidder.id + '_' + timestamp.toString())
+    let bid = new BidLog(tokenId + '-' + bidder.id + '-' + timestamp.toString())
     bid.timestamp = timestamp
-    bid.token = tokenId
+    bid.token = token.id
     bid.amountInEth = event.params.bidAmount
     bid.bidder = bidder.id
     bid.save()
@@ -111,7 +113,7 @@ export function handleBidProposed(event: BidProposed): void {
 
 export function handleBidWithdrawn(event: BidWithdrawn): void {
 
-  let tokenId = event.params.tokenId
+  let tokenId = event.params.tokenId.toString()
   let timestamp = event.block.timestamp
   let token = Token.load(tokenId)
   
@@ -136,7 +138,7 @@ export function handleBidWithdrawn(event: BidWithdrawn): void {
 
 export function handleBuyPriceSet(event: BuyPriceSet): void {
 
-  let tokenId = event.params.tokenId
+  let tokenId = event.params.tokenId.toString()
   let timestamp = event.block.timestamp
   let token = Token.load(tokenId)
   
@@ -151,14 +153,85 @@ export function handleBuyPriceSet(event: BuyPriceSet): void {
 
 }
 
-export function handleControlLeverUpdated(event: ControlLeverUpdated): void {}
+export function handleControlLeverUpdated(event: ControlLeverUpdated): void {
 
-export function handlePlatformAddressUpdated(
-  event: PlatformAddressUpdated
-): void {}
+}
 
-export function handleRoyaltyAmountUpdated(event: RoyaltyAmountUpdated): void {}
+export function handlePlatformAddressUpdated(event: PlatformAddressUpdated): void {
+  let platform = Platform.loadOrCreatePlatform(PLATFORM_ID)
+  platform.address = event.params.platformAddress
+  platform.lastModifiedTimestamp = event.block.timestamp
+  platform.save()
+}
 
-export function handleTokenSale(event: TokenSale): void {}
+export function handleRoyaltyAmountUpdated(event: RoyaltyAmountUpdated): void {
+  let platform = Platform.loadOrCreatePlatform(PLATFORM_ID)
+  platform.platformFirstSalePercentage = event.params.platformFirstPercentage
+  platform.platformSecondSalePercentage = event.params.platformSecondPercentage
+  platform.artistSecondarySalePercentage = event.params.artistSecondPercentage
+  platform.lastModifiedTimestamp = event.block.timestamp
+  platform.save()
+}
 
-export function handleTransfer(event: Transfer): void {}
+export function handleTokenSale(event: TokenSale): void {
+
+  let tokenId = event.params.tokenId.toString()
+  let timestamp = event.block.timestamp
+  let token = Token.load(tokenId)
+  
+  if (token != null) {
+
+    // Get buyer account
+    let buyer = loadOrCreateAccount(event.params.buyer)
+
+    // Update SaleLog
+    let sale = new SaleLog(tokenId + '-' + buyer.id + '-' + timestamp.toString())
+    sale.timestamp = timestamp
+    sale.token = token.id
+    sale.amountInEth = event.params.salePrice
+    sale.buyer = buyer.id
+    sale.seller = token.owner
+    sale.save()
+
+    // Note: commented-out for now because we probably don't want
+    //       to update ownership unless a Transfer event is heard
+    // Update Token
+    // token.owner = buyer.id
+    // token.allOwners.push(buyer.id)
+    // token.lastModifiedTimestamp = timestamp
+    // token.save()
+  
+    // Update platform stats
+    let platform = Platform.loadOrCreatePlatform(PLATFORM_ID)
+    platform.totalSale += 1
+    platform.totalSaleInEth += event.params.salePrice
+    platform.save()
+
+  }
+}
+
+export function handleTransfer(event: Transfer): void {
+
+  let tokenId = event.params.tokenId.toString()
+  let from = loadOrCreateAccount(event.params.from)
+  let to = loadOrCreateAccount(event.params.to)
+  let token = load(tokenId)
+  let timestamp = event.block.timestamp
+
+  if (token != null) {
+
+    // Add a new entry in TransferLog
+    let transfer = new TransferLog(tokenId + '-' + from.id + '-' + to.id)
+    transfer.timestamp = timestamp
+    transfer.from = from.id
+    transfer.to = to.id
+    transfer.save()
+
+    // Update Token ownership
+    token.owner = to.id
+    token.allOwners.push(to.id)
+    token.lastModifiedTimestamp = timestamp
+    token.save()
+
+  }
+}

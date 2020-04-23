@@ -1,10 +1,12 @@
 type Platform @entity {
   id: ID!
   address: Bytes! 
-  totalEth: BigInt!
-  platformPrimarySaleFraction: BigDecimal!
-  platformSecondarySaleFraction: BigDecimal!
-  artistSecondarySaleFraction: BigDecimal!
+  totalSale: BigInt!
+  totalSaleInEth: BigInt!
+  platformPrimarySaleFraction: BigInt!
+  platformSecondarySaleFraction: BigInt!
+  artistSecondarySaleFraction: BigInt!
+  lastModifiedTimestamp: BigInt!
 }
 
 type Token @entity {
@@ -12,7 +14,7 @@ type Token @entity {
   url: String!
   tokenId: BigInt!
   creator: Account!
-  currentOwner: Account!
+  owner: Account!
   allOwners: [Account!]! # list of all unique owners
   isMaster: Boolean        # if the token is a Master; false if it's a Layer.
   master: Token            # the Master of the Token (only present if it is a Layer)

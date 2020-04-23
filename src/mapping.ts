@@ -134,7 +134,22 @@ export function handleBidWithdrawn(event: BidWithdrawn): void {
   }
 }
 
-export function handleBuyPriceSet(event: BuyPriceSet): void {}
+export function handleBuyPriceSet(event: BuyPriceSet): void {
+
+  let tokenId = event.params.tokenId
+  let timestamp = event.block.timestamp
+  let token = Token.load(tokenId)
+  
+  if (token != null) {
+
+    // Update token buy-it-now price and last modified timestamp
+    token.buyNowPriceInEth = event.params.price
+    token.lastModifiedTimestamp = timestamp
+    token.save()
+
+  }
+
+}
 
 export function handleControlLeverUpdated(event: ControlLeverUpdated): void {}
 

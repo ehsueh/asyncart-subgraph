@@ -12,7 +12,7 @@ import {
   TokenSale,
   Transfer
 } from "../generated/Contract/Contract"
-import { ExampleEntity } from "../generated/schema"
+import { Platform, Token, Account, SaleLog, BidLog, TransferLog } from "../generated/schema"
 
 export function handleApproval(event: Approval): void {
   // Entities can be loaded from the store using a string ID; this ID

@@ -1,6 +1,60 @@
-type ExampleEntity @entity {
+type Platform @entity {
   id: ID!
-  count: BigInt!
-  owner: Bytes! # address
-  approved: Bytes! # address
+  address: Bytes! 
+  totalEth: BigInt!
+  platformPrimarySaleFraction: BigDecimal!
+  platformSecondarySaleFraction: BigDecimal!
+  artistSecondarySaleFraction: BigDecimal!
+}
+
+type Token @entity {
+  id: ID!
+  url: String!
+  tokenId: BigInt!
+  creator: Account!
+  currentOwner: Account!
+  allOwners: [Collector!]! # list of all unique owners
+  isMaster: Boolean        # if the token is a Master; false if it's a Layer.
+  master: Token            # the Master of the Token (only present if it is a Layer)
+  created: BigInt!
+  currentBid: BidLog
+  allBids: [BidLog!]!
+  modified: BigInt
+  lastTransfer: TransferLog
+  allTransfers: [TransferLog!]!
+  buyItNowPriceInEth: BigDecimal!
+}
+
+type Account @entity {
+  id: ID!
+  address: Bytes!
+  isCreator: Boolean
+  bids: [BidLog!]! @derivedFrom(field: "bidder")
+  created: [Token!]! @derivedFrom(field: "creator")
+  owns: [Token!]! @derivedFrom(field: "owner")
+}
+
+type SaleLog @entity {
+  id: ID!
+  timestamp: BigInt!
+  token: Token!
+  amountInEth: BigDecimal!
+  buyer: Account!
+  seller: Account!
+}
+
+type BidLog @entity {
+  id: ID!
+  timestamp: BigInt!
+  token: Token!
+  amountInEth: BigDecimal!
+  bidder: Account!
+}
+
+type TransferLog @entity {
+  id: ID!
+  timestamp: BigInt!
+  token: Token!
+  from: Bytes!
+  to: Bytes!
 }

@@ -13,13 +13,13 @@ type Token @entity {
   tokenId: BigInt!
   creator: Account!
   currentOwner: Account!
-  allOwners: [Collector!]! # list of all unique owners
+  allOwners: [Account!]! # list of all unique owners
   isMaster: Boolean        # if the token is a Master; false if it's a Layer.
   master: Token            # the Master of the Token (only present if it is a Layer)
   created: BigInt!
   currentBid: BidLog
   allBids: [BidLog!]!
-  modified: BigInt
+  lastModifiedTimestamp: BigInt
   lastTransfer: TransferLog
   allTransfers: [TransferLog!]!
   buyItNowPriceInEth: BigDecimal!
@@ -49,6 +49,8 @@ type BidLog @entity {
   token: Token!
   amountInEth: BigDecimal!
   bidder: Account!
+  isWithdrawn: Boolean! # whether or not the bid has been withdrawn
+  withdrawnTimestamp: BigInt 
 }
 
 type TransferLog @entity {

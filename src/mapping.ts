@@ -80,9 +80,59 @@ export function handleApproval(event: Approval): void {
 
 export function handleApprovalForAll(event: ApprovalForAll): void {}
 
-export function handleBidProposed(event: BidProposed): void {}
+export function handleBidProposed(event: BidProposed): void {
 
-export function handleBidWithdrawn(event: BidWithdrawn): void {}
+  let tokenId = event.params.tokenId
+  let timestamp = event.block.timestamp
+  let token = Token.load(tokenId)
+
+  if (token != null) {
+
+    // Get the bidder or create if doesn't already exist
+    let bidder = loadOrCreateAccount(event.params.bidder)
+
+    // Create a new bid log entry with tokenId-bidder-timestamp being the id
+    let bid = new BidLog(tokenId.toString() + '_' + bidder.id + '_' + timestamp.toString())
+    bid.timestamp = timestamp
+    bid.token = tokenId
+    bid.amountInEth = event.params.bidAmount
+    bid.bidder = bidder.id
+    bid.save()
+
+    // Update Token attributes
+    token.allBids.push(bid.id)
+    token.currentBid = bid.id
+    token.lastModifiedTimestamp = timestamp
+    token.save()
+
+  }
+
+}
+
+export function handleBidWithdrawn(event: BidWithdrawn): void {
+
+  let tokenId = event.params.tokenId
+  let timestamp = event.block.timestamp
+  let token = Token.load(tokenId)
+  
+  if (token != null) {
+
+    // Get the bid (must be the last element in the array aka the current bid)
+    let bid = token.currentBid
+
+    // Update bid log
+    bid.withdrawnTimestamp = timestamp
+    bid.isWithdrawn = true
+    bid.save()
+
+    // Update Token attributes
+    token.allBids.pop()
+    token.currentBid = bid.id[token.currentBid.length - 1]
+    token.lastModifiedTimestamp = timestamp
+    token.save()
+    
+  }
+}
 
 export function handleBuyPriceSet(event: BuyPriceSet): void {}
 

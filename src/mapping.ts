@@ -13,32 +13,36 @@ import {
   Transfer
 } from "../generated/Contract/Contract"
 import { Platform, Token, Account, SaleLog, BidLog, TransferLog } from "../generated/schema"
+import { loadOrCreateAccount, loadOrCreatePlatform, loadOrCreateToken} from "./factory"
 
 const PLATFORM_ID = "async-art-1.0"
+const GENESIS_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 export function handleApproval(event: Approval): void {
-  // Entities can be loaded from the store using a string ID; this ID
-  // needs to be unique across all entities of the same type
-  let entity = ExampleEntity.load(event.transaction.from.toHex())
+  // Note: Leaving the example docs here for people working with
+  //       the graph for the first time. Can remove after.
+  // // Entities can be loaded from the store using a string ID; this ID
+  // // needs to be unique across all entities of the same type
+  // let entity = ExampleEntity.load(event.transaction.from.toHex())
 
-  // Entities only exist after they have been saved to the store;
-  // `null` checks allow to create entities on demand
-  if (entity == null) {
-    entity = new ExampleEntity(event.transaction.from.toHex())
+  // // Entities only exist after they have been saved to the store;
+  // // `null` checks allow to create entities on demand
+  // if (entity == null) {
+  //   entity = new ExampleEntity(event.transaction.from.toHex())
 
-    // Entity fields can be set using simple assignments
-    entity.count = BigInt.fromI32(0)
-  }
+  //   // Entity fields can be set using simple assignments
+  //   entity.count = BigInt.fromI32(0)
+  // }
 
-  // BigInt and BigDecimal math are supported
-  entity.count = entity.count + BigInt.fromI32(1)
+  // // BigInt and BigDecimal math are supported
+  // entity.count = entity.count + BigInt.fromI32(1)
 
-  // Entity fields can be set based on event parameters
-  entity.owner = event.params.owner
-  entity.approved = event.params.approved
+  // // Entity fields can be set based on event parameters
+  // entity.owner = event.params.owner
+  // entity.approved = event.params.approved
 
-  // Entities can be written to the store with `.save()`
-  entity.save()
+  // // Entities can be written to the store with `.save()`
+  // entity.save()
 
   // Note: If a handler doesn't require existing field values, it is faster
   // _not_ to load the entity from the store. Instead, create it fresh with
@@ -84,7 +88,7 @@ export function handleApprovalForAll(event: ApprovalForAll): void {}
 
 export function handleBidProposed(event: BidProposed): void {
 
-  let tokenId = event.params.tokenId.toString()
+  let tokenId = event.params.tokenId
   let timestamp = event.block.timestamp
   let token = loadOrCreateToken(tokenId)
 
@@ -94,7 +98,7 @@ export function handleBidProposed(event: BidProposed): void {
     let bidder = loadOrCreateAccount(event.params.bidder)
 
     // Create a new bid log entry with tokenId-bidder-timestamp being the id
-    let bid = new BidLog(tokenId + '-' + bidder.id + '-' + timestamp.toString())
+    let bid = new BidLog(tokenId.toString() + '-' + bidder.id + '-' + timestamp.toString())
     bid.timestamp = timestamp
     bid.token = token.id
     bid.amountInEth = event.params.bidAmount
@@ -113,7 +117,7 @@ export function handleBidProposed(event: BidProposed): void {
 
 export function handleBidWithdrawn(event: BidWithdrawn): void {
 
-  let tokenId = event.params.tokenId.toString()
+  let tokenId = event.params.tokenId
   let timestamp = event.block.timestamp
   let token = loadOrCreateToken(tokenId)
 
@@ -135,7 +139,7 @@ export function handleBidWithdrawn(event: BidWithdrawn): void {
 
 export function handleBuyPriceSet(event: BuyPriceSet): void {
 
-  let tokenId = event.params.tokenId.toString()
+  let tokenId = event.params.tokenId
   let timestamp = event.block.timestamp
   let token = loadOrCreateToken(tokenId)
   
@@ -151,14 +155,14 @@ export function handleControlLeverUpdated(event: ControlLeverUpdated): void {
 }
 
 export function handlePlatformAddressUpdated(event: PlatformAddressUpdated): void {
-  let platform = Platform.loadOrCreatePlatform(PLATFORM_ID)
+  let platform = loadOrCreatePlatform(PLATFORM_ID)
   platform.address = event.params.platformAddress
   platform.lastModifiedTimestamp = event.block.timestamp
   platform.save()
 }
 
 export function handleRoyaltyAmountUpdated(event: RoyaltyAmountUpdated): void {
-  let platform = Platform.loadOrCreatePlatform(PLATFORM_ID)
+  let platform = loadOrCreatePlatform(PLATFORM_ID)
   platform.platformFirstSalePercentage = event.params.platformFirstPercentage
   platform.platformSecondSalePercentage = event.params.platformSecondPercentage
   platform.artistSecondarySalePercentage = event.params.artistSecondPercentage
@@ -168,7 +172,7 @@ export function handleRoyaltyAmountUpdated(event: RoyaltyAmountUpdated): void {
 
 export function handleTokenSale(event: TokenSale): void {
 
-  let tokenId = event.params.tokenId.toString()
+  let tokenId = event.params.tokenId
   let timestamp = event.block.timestamp
   let token = loadOrCreateToken(tokenId)
 
@@ -176,7 +180,7 @@ export function handleTokenSale(event: TokenSale): void {
   let buyer = loadOrCreateAccount(event.params.buyer)
 
   // Update SaleLog
-  let sale = new SaleLog(tokenId + '-' + buyer.id + '-' + timestamp.toString())
+  let sale = new SaleLog(tokenId.toString() + '-' + buyer.id + '-' + timestamp.toString())
   sale.timestamp = timestamp
   sale.token = token.id
   sale.amountInEth = event.params.salePrice
@@ -193,7 +197,7 @@ export function handleTokenSale(event: TokenSale): void {
   // token.save()
 
   // Update platform stats
-  let platform = Platform.loadOrCreatePlatform(PLATFORM_ID)
+  let platform = loadOrCreatePlatform(PLATFORM_ID)
   platform.totalSale += 1
   platform.totalSaleInEth += event.params.salePrice
   platform.save()
@@ -202,18 +206,35 @@ export function handleTokenSale(event: TokenSale): void {
 
 export function handleTransfer(event: Transfer): void {
 
-  let tokenId = event.params.tokenId.toString()
+  let tokenId = event.params.tokenId
   let from = loadOrCreateAccount(event.params.from)
   let to = loadOrCreateAccount(event.params.to)
   let token = loadOrCreateToken(tokenId)
   let timestamp = event.block.timestamp
-
+  
   // Add a new entry in TransferLog
-  let transfer = new TransferLog(tokenId + '-' + from.id + '-' + to.id)
+  let transfer = new TransferLog(tokenId.toString() + '-' + from.id + '-' + to.id)
   transfer.timestamp = timestamp
   transfer.from = from.id
   transfer.to = to.id
   transfer.save()
+
+  // If the token comes from a genesis block, 
+  // it's a newly minted token
+  if (from.address == GENESIS_ADDRESS) {
+    let contract = Contract.bind(event.address)
+    let tokenURI = contract.tokenURI(tokenId)
+    token.uri = tokenURI.toString()
+    token.tokenId = tokenId
+    token.creator = to
+    // TODO how to get the info about isMaster and master?
+    token.created = timestamp
+    token.currentBid = 0
+    token.allBids = []
+    token.lastTransfer = transfer.id
+    token.allTransfer = [transfer.id]
+    token.save()    
+  }   
 
   // Update Token ownership
   token.owner = to.id

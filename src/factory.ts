@@ -9,7 +9,7 @@ import {
   Account
 } from "../generated/schema"
 
-export function loadOrCreatePlatform(platformId: String) {
+export function loadOrCreatePlatform(platformId: String): Platform {
 
   let platform = Platform.load(platformId)
   
@@ -21,7 +21,7 @@ export function loadOrCreatePlatform(platformId: String) {
   return platform as Platform
 }
 
-export function loadOrCreateAccount(address: Address) {
+export function loadOrCreateAccount(address: Address): Account {
 
   let account = Account.load(address.toHex())
   
@@ -35,7 +35,7 @@ export function loadOrCreateAccount(address: Address) {
   return account as Account
 }
 
-export function loadOrCreateToken(tokenId: BigInt) {
+export function loadOrCreateToken(tokenId: BigInt): Token {
 
   let token = Token.load(tokenId.toString())
 

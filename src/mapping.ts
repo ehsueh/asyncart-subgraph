@@ -233,7 +233,6 @@ export function handleTransfer(event: Transfer): void {
     token.allBids = []
     token.lastTransfer = transfer.id
     token.allTransfer = [transfer.id]
-    token.save()    
   }   
 
   // Update Token ownership

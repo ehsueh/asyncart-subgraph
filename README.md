@@ -42,7 +42,11 @@ sudo apt install libsecret-1-dev
 If that doesn't work, you can still run without stored key (and just pass the token in every time. See below in the deploy section.)
 3. Add the subgraph by following the instructions [here](https://thegraph.com/docs/deploy-a-subgraph#create-the-subgraph).
 
-### Build
+### Generate Codes or Build
+
+```
+yarn codegen
+```
 
 ``` 
 yarn build

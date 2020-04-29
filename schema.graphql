@@ -3,9 +3,9 @@ type Platform @entity {
   address: Bytes! 
   totalSale: BigInt!
   totalSaleInEth: BigInt!
-  platformPrimarySaleFraction: BigInt!
-  platformSecondarySaleFraction: BigInt!
-  artistSecondarySaleFraction: BigInt!
+  platformFirstSalePercentage: BigInt!
+  platformSecondSalePercentage: BigInt!
+  artistSecondSalePercentage: BigInt!
   lastModifiedTimestamp: BigInt!
 }
 
@@ -24,7 +24,7 @@ type Token @entity {
   lastModifiedTimestamp: BigInt
   lastTransfer: TransferLog
   allTransfers: [TransferLog!]!
-  buyNowPriceInEth: BigDecimal!
+  buyNowPriceInEth: BigInt!
 }
 
 type Account @entity {
@@ -40,7 +40,7 @@ type SaleLog @entity {
   id: ID!
   timestamp: BigInt!
   token: Token!
-  amountInEth: BigDecimal!
+  amountInEth: BigInt!
   buyer: Account!
   seller: Account!
 }
@@ -49,7 +49,7 @@ type BidLog @entity {
   id: ID!
   timestamp: BigInt!
   token: Token!
-  amountInEth: BigDecimal!
+  amountInEth: BigInt!
   bidder: Account!
   isWithdrawn: Boolean! # whether or not the bid has been withdrawn
   withdrawnTimestamp: BigInt 

@@ -16,7 +16,7 @@ import { Platform, Token, Account, SaleLog, BidLog, TransferLog } from "../gener
 import { loadOrCreateAccount, loadOrCreatePlatform, loadOrCreateToken} from "./factory"
 
 const PLATFORM_ID = "async-art-1.0"
-const GENESIS_ADDRESS = '0x0000000000000000000000000000000000000000'
+const GENESIS_ADDRESS = "0x0000000000000000000000000000000000000000"
 
 export function handleApproval(event: Approval): void {
   // Note: Leaving the example docs here for people working with
@@ -122,19 +122,20 @@ export function handleBidWithdrawn(event: BidWithdrawn): void {
   let token = loadOrCreateToken(tokenId)
 
   // Get the bid (must be the last element in the array aka the current bid)
-  let bid = token.currentBid
+  let bid = BidLog.load(token.currentBid)
 
-  // Update bid log
-  bid.withdrawnTimestamp = timestamp
-  bid.isWithdrawn = true
-  bid.save()
+  if (bid != null) {
+    // Update bid log
+    bid.withdrawnTimestamp = timestamp
+    bid.isWithdrawn = true
+    bid.save()
 
-  // Update Token attributes
-  token.allBids.pop()
-  token.currentBid = bid.id[token.currentBid.length - 1]
-  token.lastModifiedTimestamp = timestamp
-  token.save()
-    
+    // Update Token attributes
+    token.allBids.pop()
+    token.currentBid = token.allBids[token.allOwners.length - 1]
+    token.lastModifiedTimestamp = timestamp
+    token.save()
+    }
 }
 
 export function handleBuyPriceSet(event: BuyPriceSet): void {
@@ -165,7 +166,7 @@ export function handleRoyaltyAmountUpdated(event: RoyaltyAmountUpdated): void {
   let platform = loadOrCreatePlatform(PLATFORM_ID)
   platform.platformFirstSalePercentage = event.params.platformFirstPercentage
   platform.platformSecondSalePercentage = event.params.platformSecondPercentage
-  platform.artistSecondarySalePercentage = event.params.artistSecondPercentage
+  platform.artistSecondSalePercentage = event.params.artistSecondPercentage
   platform.lastModifiedTimestamp = event.block.timestamp
   platform.save()
 }
@@ -198,8 +199,8 @@ export function handleTokenSale(event: TokenSale): void {
 
   // Update platform stats
   let platform = loadOrCreatePlatform(PLATFORM_ID)
-  platform.totalSale += 1
-  platform.totalSaleInEth += event.params.salePrice
+  platform.totalSale = new BigInt(Number(platform.totalSale) + 1)
+  platform.totalSaleInEth = new BigInt(Number(platform.totalSaleInEth) + Number(event.params.salePrice))
   platform.save()
 
 }
@@ -215,24 +216,23 @@ export function handleTransfer(event: Transfer): void {
   // Add a new entry in TransferLog
   let transfer = new TransferLog(tokenId.toString() + '-' + from.id + '-' + to.id)
   transfer.timestamp = timestamp
-  transfer.from = from.id
-  transfer.to = to.id
+  transfer.from = from.address
+  transfer.to = to.address
   transfer.save()
 
   // If the token comes from a genesis block, 
   // it's a newly minted token
-  if (from.address == GENESIS_ADDRESS) {
+  if (from.address.toHex() == GENESIS_ADDRESS) {
     let contract = Contract.bind(event.address)
     let tokenURI = contract.tokenURI(tokenId)
     token.uri = tokenURI.toString()
     token.tokenId = tokenId
-    token.creator = to
+    token.creator = to.id
     // TODO how to get the info about isMaster and master?
     token.created = timestamp
-    token.currentBid = 0
     token.allBids = []
     token.lastTransfer = transfer.id
-    token.allTransfer = [transfer.id]
+    token.allTransfers = [transfer.id]
   }   
 
   // Update Token ownership

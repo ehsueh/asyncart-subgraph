@@ -11,7 +11,7 @@ type Platform @entity {
 
 type Token @entity {
   id: ID!
-  url: String!
+  uri: String!
   tokenId: BigInt!
   creator: Account!
   owner: Account!

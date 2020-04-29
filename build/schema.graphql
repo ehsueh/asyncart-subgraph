@@ -1,0 +1,64 @@
+type Platform @entity {
+  id: ID!
+  address: Bytes! 
+  totalSale: BigInt!
+  totalSaleInEth: BigInt!
+  platformFirstSalePercentage: BigInt!
+  platformSecondSalePercentage: BigInt!
+  artistSecondSalePercentage: BigInt!
+  lastModifiedTimestamp: BigInt!
+}
+
+type Token @entity {
+  id: ID!
+  uri: String!
+  tokenId: BigInt!
+  creator: Account!
+  owner: Account!
+  allOwners: [Account!]! # list of all unique owners
+  isMaster: Boolean        # if the token is a Master; false if it's a Layer.
+  master: Token            # the Master of the Token (only present if it is a Layer)
+  created: BigInt!
+  currentBid: BidLog
+  allBids: [BidLog!]!
+  lastModifiedTimestamp: BigInt
+  lastTransfer: TransferLog
+  allTransfers: [TransferLog!]!
+  buyNowPriceInEth: BigInt!
+}
+
+type Account @entity {
+  id: ID!
+  address: Bytes!
+  isCreator: Boolean
+  bids: [BidLog!]! @derivedFrom(field: "bidder")
+  created: [Token!]! @derivedFrom(field: "creator")
+  owns: [Token!]! @derivedFrom(field: "owner")
+}
+
+type SaleLog @entity {
+  id: ID!
+  timestamp: BigInt!
+  token: Token!
+  amountInEth: BigInt!
+  buyer: Account!
+  seller: Account!
+}
+
+type BidLog @entity {
+  id: ID!
+  timestamp: BigInt!
+  token: Token!
+  amountInEth: BigInt!
+  bidder: Account!
+  isWithdrawn: Boolean! # whether or not the bid has been withdrawn
+  withdrawnTimestamp: BigInt 
+}
+
+type TransferLog @entity {
+  id: ID!
+  timestamp: BigInt!
+  token: Token!
+  from: Bytes!
+  to: Bytes!
+}

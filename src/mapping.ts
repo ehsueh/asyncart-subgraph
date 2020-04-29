@@ -131,8 +131,9 @@ export function handleBidWithdrawn(event: BidWithdrawn): void {
     bid.save()
 
     // Update Token attributes
+    let allBids = token.allBids
     token.allBids.pop()
-    token.currentBid = token.allBids[token.allOwners.length - 1]
+    token.currentBid = allBids[allBids.length - 1]
     token.lastModifiedTimestamp = timestamp
     token.save()
     }
@@ -199,8 +200,8 @@ export function handleTokenSale(event: TokenSale): void {
 
   // Update platform stats
   let platform = loadOrCreatePlatform(PLATFORM_ID)
-  platform.totalSale = new BigInt(Number(platform.totalSale) + 1)
-  platform.totalSaleInEth = new BigInt(Number(platform.totalSaleInEth) + Number(event.params.salePrice))
+  platform.totalSale = platform.totalSale + BigInt.fromI32(1)
+  platform.totalSaleInEth = platform.totalSaleInEth + event.params.salePrice
   platform.save()
 
 }

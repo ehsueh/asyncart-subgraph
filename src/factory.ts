@@ -15,7 +15,6 @@ export function loadOrCreatePlatform(platformId: String): Platform {
   
   if (platform == null) {
     platform = new Platform(platformId)
-    platform.save()
   }
 
   return platform as Platform
@@ -29,7 +28,6 @@ export function loadOrCreateAccount(address: Address): Account {
   if (account == null) {
     account = new Account(address.toHex())
     account.address = address
-    account.save()
   }
 
   return account as Account
@@ -42,7 +40,6 @@ export function loadOrCreateToken(tokenId: BigInt): Token {
   // Create Token 
   if (token == null) {
     token = new Token(tokenId.toString())
-    token.save()
   }
 
   return token as Token

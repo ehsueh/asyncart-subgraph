@@ -51,58 +51,112 @@ export class Platform extends Entity {
     this.set("address", Value.fromBytes(value));
   }
 
-  get totalSale(): BigInt {
+  get totalSale(): BigInt | null {
     let value = this.get("totalSale");
-    return value.toBigInt();
+    if (value === null) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
   }
 
-  set totalSale(value: BigInt) {
-    this.set("totalSale", Value.fromBigInt(value));
+  set totalSale(value: BigInt | null) {
+    if (value === null) {
+      this.unset("totalSale");
+    } else {
+      this.set("totalSale", Value.fromBigInt(value as BigInt));
+    }
   }
 
-  get totalSaleInEth(): BigInt {
+  get totalSaleInEth(): BigInt | null {
     let value = this.get("totalSaleInEth");
-    return value.toBigInt();
+    if (value === null) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
   }
 
-  set totalSaleInEth(value: BigInt) {
-    this.set("totalSaleInEth", Value.fromBigInt(value));
+  set totalSaleInEth(value: BigInt | null) {
+    if (value === null) {
+      this.unset("totalSaleInEth");
+    } else {
+      this.set("totalSaleInEth", Value.fromBigInt(value as BigInt));
+    }
   }
 
-  get platformFirstSalePercentage(): BigInt {
+  get platformFirstSalePercentage(): BigInt | null {
     let value = this.get("platformFirstSalePercentage");
-    return value.toBigInt();
+    if (value === null) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
   }
 
-  set platformFirstSalePercentage(value: BigInt) {
-    this.set("platformFirstSalePercentage", Value.fromBigInt(value));
+  set platformFirstSalePercentage(value: BigInt | null) {
+    if (value === null) {
+      this.unset("platformFirstSalePercentage");
+    } else {
+      this.set(
+        "platformFirstSalePercentage",
+        Value.fromBigInt(value as BigInt)
+      );
+    }
   }
 
-  get platformSecondSalePercentage(): BigInt {
+  get platformSecondSalePercentage(): BigInt | null {
     let value = this.get("platformSecondSalePercentage");
-    return value.toBigInt();
+    if (value === null) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
   }
 
-  set platformSecondSalePercentage(value: BigInt) {
-    this.set("platformSecondSalePercentage", Value.fromBigInt(value));
+  set platformSecondSalePercentage(value: BigInt | null) {
+    if (value === null) {
+      this.unset("platformSecondSalePercentage");
+    } else {
+      this.set(
+        "platformSecondSalePercentage",
+        Value.fromBigInt(value as BigInt)
+      );
+    }
   }
 
-  get artistSecondSalePercentage(): BigInt {
+  get artistSecondSalePercentage(): BigInt | null {
     let value = this.get("artistSecondSalePercentage");
-    return value.toBigInt();
+    if (value === null) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
   }
 
-  set artistSecondSalePercentage(value: BigInt) {
-    this.set("artistSecondSalePercentage", Value.fromBigInt(value));
+  set artistSecondSalePercentage(value: BigInt | null) {
+    if (value === null) {
+      this.unset("artistSecondSalePercentage");
+    } else {
+      this.set("artistSecondSalePercentage", Value.fromBigInt(value as BigInt));
+    }
   }
 
-  get lastModifiedTimestamp(): BigInt {
+  get lastModifiedTimestamp(): BigInt | null {
     let value = this.get("lastModifiedTimestamp");
-    return value.toBigInt();
+    if (value === null) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
   }
 
-  set lastModifiedTimestamp(value: BigInt) {
-    this.set("lastModifiedTimestamp", Value.fromBigInt(value));
+  set lastModifiedTimestamp(value: BigInt | null) {
+    if (value === null) {
+      this.unset("lastModifiedTimestamp");
+    } else {
+      this.set("lastModifiedTimestamp", Value.fromBigInt(value as BigInt));
+    }
   }
 }
 
@@ -242,38 +296,22 @@ export class Token extends Entity {
     this.set("allBids", Value.fromStringArray(value));
   }
 
-  get lastModifiedTimestamp(): BigInt | null {
+  get lastModifiedTimestamp(): BigInt {
     let value = this.get("lastModifiedTimestamp");
-    if (value === null) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
+    return value.toBigInt();
   }
 
-  set lastModifiedTimestamp(value: BigInt | null) {
-    if (value === null) {
-      this.unset("lastModifiedTimestamp");
-    } else {
-      this.set("lastModifiedTimestamp", Value.fromBigInt(value as BigInt));
-    }
+  set lastModifiedTimestamp(value: BigInt) {
+    this.set("lastModifiedTimestamp", Value.fromBigInt(value));
   }
 
-  get lastTransfer(): string | null {
+  get lastTransfer(): string {
     let value = this.get("lastTransfer");
-    if (value === null) {
-      return null;
-    } else {
-      return value.toString();
-    }
+    return value.toString();
   }
 
-  set lastTransfer(value: string | null) {
-    if (value === null) {
-      this.unset("lastTransfer");
-    } else {
-      this.set("lastTransfer", Value.fromString(value as string));
-    }
+  set lastTransfer(value: string) {
+    this.set("lastTransfer", Value.fromString(value));
   }
 
   get allTransfers(): Array<string> {
@@ -285,13 +323,21 @@ export class Token extends Entity {
     this.set("allTransfers", Value.fromStringArray(value));
   }
 
-  get buyNowPriceInEth(): BigInt {
+  get buyNowPriceInEth(): BigInt | null {
     let value = this.get("buyNowPriceInEth");
-    return value.toBigInt();
+    if (value === null) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
   }
 
-  set buyNowPriceInEth(value: BigInt) {
-    this.set("buyNowPriceInEth", Value.fromBigInt(value));
+  set buyNowPriceInEth(value: BigInt | null) {
+    if (value === null) {
+      this.unset("buyNowPriceInEth");
+    } else {
+      this.set("buyNowPriceInEth", Value.fromBigInt(value as BigInt));
+    }
   }
 }
 

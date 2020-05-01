@@ -1,4 +1,4 @@
-import { BigInt } from "@graphprotocol/graph-ts"
+import { BigInt, log } from "@graphprotocol/graph-ts"
 import {
   Contract,
   Approval,
@@ -15,7 +15,6 @@ import {
 import { Platform, Token, Account, SaleLog, BidLog, TransferLog } from "../generated/schema"
 import { loadOrCreateAccount, loadOrCreatePlatform, loadOrCreateToken} from "./factory"
 
-const PLATFORM_ID = "async-art-1.0"
 const GENESIS_ADDRESS = "0x0000000000000000000000000000000000000000"
 
 export function handleApproval(event: Approval): void {
@@ -130,11 +129,13 @@ export function handleBidWithdrawn(event: BidWithdrawn): void {
 
     // Update Token attributes
     let allBids = token.allBids
-    token.allBids.pop()
-    token.currentBid = allBids[allBids.length - 1]
-    token.lastModifiedTimestamp = timestamp
-    token.save()
+    if (allBids.length > 0) {
+      token.allBids.pop()
+      token.currentBid = allBids[allBids.length - 1]
+      token.lastModifiedTimestamp = timestamp
+      token.save()
     }
+  }
 }
 
 export function handleBuyPriceSet(event: BuyPriceSet): void {
@@ -155,14 +156,14 @@ export function handleControlLeverUpdated(event: ControlLeverUpdated): void {
 }
 
 export function handlePlatformAddressUpdated(event: PlatformAddressUpdated): void {
-  let platform = loadOrCreatePlatform(PLATFORM_ID)
+  let platform = loadOrCreatePlatform(event.address)
   platform.address = event.params.platformAddress
   platform.lastModifiedTimestamp = event.block.timestamp
   platform.save()
 }
 
 export function handleRoyaltyAmountUpdated(event: RoyaltyAmountUpdated): void {
-  let platform = loadOrCreatePlatform(PLATFORM_ID)
+  let platform = loadOrCreatePlatform(event.address)
   platform.platformFirstSalePercentage = event.params.platformFirstPercentage
   platform.platformSecondSalePercentage = event.params.platformSecondPercentage
   platform.artistSecondSalePercentage = event.params.artistSecondPercentage
@@ -197,7 +198,7 @@ export function handleTokenSale(event: TokenSale): void {
   // token.save()
 
   // Update platform stats
-  let platform = loadOrCreatePlatform(PLATFORM_ID)
+  let platform = loadOrCreatePlatform(event.address) 
   platform.totalSale = platform.totalSale + BigInt.fromI32(1)
   platform.totalSaleInEth = platform.totalSaleInEth + event.params.salePrice
   platform.save()

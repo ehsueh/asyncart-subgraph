@@ -9,12 +9,13 @@ import {
   Account
 } from "../generated/schema"
 
-export function loadOrCreatePlatform(platformId: String): Platform {
+export function loadOrCreatePlatform(address: Address): Platform {
 
-  let platform = Platform.load(platformId)
+  let platform = Platform.load(address.toHex())
   
   if (platform == null) {
-    platform = new Platform(platformId)
+    platform = new Platform(address.toHex())
+    platform.address = address
   }
 
   return platform as Platform

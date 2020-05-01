@@ -94,6 +94,8 @@ export function handleBidProposed(event: BidProposed): void {
 
   // Get the bidder or create if doesn't already exist
   let bidder = loadOrCreateAccount(event.params.bidder)
+  bidder.lastModifiedTimestamp = timestamp
+  bidder.save()
 
   // Create a new bid log entry with tokenId-bidder-timestamp being the id
   let bid = new BidLog(tokenId.toString() + '-' + bidder.id + '-' + timestamp.toString())
@@ -179,6 +181,8 @@ export function handleTokenSale(event: TokenSale): void {
 
   // Get buyer account
   let buyer = loadOrCreateAccount(event.params.buyer)
+  buyer.lastModifiedTimestamp = timestamp
+  buyer.save()
 
   // Update SaleLog
   let sale = new SaleLog(tokenId.toString() + '-' + buyer.id + '-' + timestamp.toString())
@@ -212,6 +216,12 @@ export function handleTransfer(event: Transfer): void {
   let to = loadOrCreateAccount(event.params.to)
   let token = loadOrCreateToken(tokenId)
   let timestamp = event.block.timestamp
+
+  // Update related accounts
+  from.lastModifiedTimestamp = timestamp
+  to.lastModifiedTimestamp = timestamp
+  from.save()
+  to.save()
   
   // Add a new entry in TransferLog
   let transfer = new TransferLog(tokenId.toString() + '-' + from.id + '-' + to.id)

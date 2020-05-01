@@ -65,3 +65,60 @@ Or
 ```
 graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ ehsueh/async-art-subgraph --access-token <ACCESS_TOKEN>
 ```
+
+### Example GraphQL Queries
+
+Get current platform information.
+```
+{
+  platforms(first: 5) {
+    id
+    address
+    totalSale
+    totalSaleInEth
+    platformFirstSalePercentage
+    platformSecondSalePercentage
+    artistSecondSalePercentage
+  }
+}
+```
+
+Get artist or collector addresses associated with the platform and the bids they proposed, the tokens they created and the tokens they own.
+```
+{
+  accounts(first: 5) {
+		address
+    bids {
+      timestamp
+    }
+    created {
+      tokenId
+    }
+    owns {
+      tokenId
+    }
+  }
+}
+```
+
+Get recently minted tokens!
+```
+{
+  tokens(first: 10, orderBy: created, orderDirection: desc) {
+    id
+    uri
+    tokenId
+    created
+    lastTransfer {
+      from
+      to
+    }
+    allTransfers {
+      id
+    }
+    allBids {
+      id
+    }
+  }
+}
+```

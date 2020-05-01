@@ -38,7 +38,7 @@ export function loadOrCreateToken(tokenId: BigInt): Token {
 
   let token = Token.load(tokenId.toString())
 
-  // Create Token 
+  // Create Token
   if (token == null) {
     token = new Token(tokenId.toString())
   }

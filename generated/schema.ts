@@ -389,6 +389,15 @@ export class Account extends Entity {
     this.set("isCreator", Value.fromBoolean(value));
   }
 
+  get lastModifiedTimestamp(): BigInt {
+    let value = this.get("lastModifiedTimestamp");
+    return value.toBigInt();
+  }
+
+  set lastModifiedTimestamp(value: BigInt) {
+    this.set("lastModifiedTimestamp", Value.fromBigInt(value));
+  }
+
   get bids(): Array<string> {
     let value = this.get("bids");
     return value.toStringArray();

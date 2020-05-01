@@ -234,12 +234,13 @@ export function handleTransfer(event: Transfer): void {
     token.created = timestamp
     token.allBids = new Array<string>()
     token.lastTransfer = transfer.id
-    // token.allTransfers = [transfer.id]
+    token.allTransfers = new Array<string>()
   }   
 
   // Update Token ownership
   token.owner = to.id
   token.allOwners.push(to.id)
+  token.allTransfers.push(transfer.id)
   token.lastModifiedTimestamp = timestamp
   token.save()
 

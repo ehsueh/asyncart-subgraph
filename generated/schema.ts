@@ -287,12 +287,12 @@ export class Token extends Entity {
     }
   }
 
-  get allBids(): Array<string> {
+  get allBids(): Array<string | null> {
     let value = this.get("allBids");
     return value.toStringArray();
   }
 
-  set allBids(value: Array<string>) {
+  set allBids(value: Array<string | null>) {
     this.set("allBids", Value.fromStringArray(value));
   }
 
@@ -314,12 +314,12 @@ export class Token extends Entity {
     this.set("lastTransfer", Value.fromString(value));
   }
 
-  get allTransfers(): Array<string> {
+  get allTransfers(): Array<string | null> {
     let value = this.get("allTransfers");
     return value.toStringArray();
   }
 
-  set allTransfers(value: Array<string>) {
+  set allTransfers(value: Array<string | null>) {
     this.set("allTransfers", Value.fromStringArray(value));
   }
 

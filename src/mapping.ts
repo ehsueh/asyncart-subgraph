@@ -230,6 +230,7 @@ export function handleTransfer(event: Transfer): void {
     token.uri = tokenURI.toString()
     token.tokenId = tokenId
     token.creator = to.id
+    token.allOwners = new Array<string>()
     // TODO how to get the info about isMaster and master?
     token.created = timestamp
     token.allBids = new Array<string>()
@@ -240,7 +241,7 @@ export function handleTransfer(event: Transfer): void {
   // Update Token ownership
   token.owner = to.id
   token.allOwners.push(to.id)
-  token.allTransfers.push(transfer.id)
+  // token.allTransfers.push(transfer.id)
   token.lastModifiedTimestamp = timestamp
   token.save()
 

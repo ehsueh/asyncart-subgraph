@@ -217,6 +217,7 @@ export function handleTransfer(event: Transfer): void {
   // Add a new entry in TransferLog
   let transfer = new TransferLog(tokenId.toString() + '-' + from.id + '-' + to.id)
   transfer.timestamp = timestamp
+  transfer.token = token.id
   transfer.from = from.address
   transfer.to = to.address
   transfer.save()
@@ -231,9 +232,9 @@ export function handleTransfer(event: Transfer): void {
     token.creator = to.id
     // TODO how to get the info about isMaster and master?
     token.created = timestamp
-    token.allBids = []
+    token.allBids = new Array<string>()
     token.lastTransfer = transfer.id
-    token.allTransfers = [transfer.id]
+    // token.allTransfers = [transfer.id]
   }   
 
   // Update Token ownership

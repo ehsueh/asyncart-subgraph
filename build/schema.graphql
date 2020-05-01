@@ -1,12 +1,12 @@
 type Platform @entity {
   id: ID!
   address: Bytes! 
-  totalSale: BigInt!
-  totalSaleInEth: BigInt!
-  platformFirstSalePercentage: BigInt!
-  platformSecondSalePercentage: BigInt!
-  artistSecondSalePercentage: BigInt!
-  lastModifiedTimestamp: BigInt!
+  totalSale: BigInt
+  totalSaleInEth: BigInt
+  platformFirstSalePercentage: BigInt
+  platformSecondSalePercentage: BigInt
+  artistSecondSalePercentage: BigInt
+  lastModifiedTimestamp: BigInt
 }
 
 type Token @entity {
@@ -21,10 +21,10 @@ type Token @entity {
   created: BigInt!
   currentBid: BidLog
   allBids: [BidLog!]!
-  lastModifiedTimestamp: BigInt
-  lastTransfer: TransferLog
+  lastModifiedTimestamp: BigInt!
+  lastTransfer: TransferLog!
   allTransfers: [TransferLog!]!
-  buyNowPriceInEth: BigInt!
+  buyNowPriceInEth: BigInt
 }
 
 type Account @entity {

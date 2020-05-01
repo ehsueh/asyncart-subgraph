@@ -92,26 +92,24 @@ export function handleBidProposed(event: BidProposed): void {
   let timestamp = event.block.timestamp
   let token = loadOrCreateToken(tokenId)
 
-  if (token != null) {
 
-    // Get the bidder or create if doesn't already exist
-    let bidder = loadOrCreateAccount(event.params.bidder)
+  // Get the bidder or create if doesn't already exist
+  let bidder = loadOrCreateAccount(event.params.bidder)
 
-    // Create a new bid log entry with tokenId-bidder-timestamp being the id
-    let bid = new BidLog(tokenId.toString() + '-' + bidder.id + '-' + timestamp.toString())
-    bid.timestamp = timestamp
-    bid.token = token.id
-    bid.amountInEth = event.params.bidAmount
-    bid.bidder = bidder.id
-    bid.save()
+  // Create a new bid log entry with tokenId-bidder-timestamp being the id
+  let bid = new BidLog(tokenId.toString() + '-' + bidder.id + '-' + timestamp.toString())
+  bid.timestamp = timestamp
+  bid.token = token.id
+  bid.amountInEth = event.params.bidAmount
+  bid.bidder = bidder.id
+  bid.isWithdrawn = false
+  bid.save()
 
-    // Update Token attributes
-    token.allBids.push(bid.id)
-    token.currentBid = bid.id
-    token.lastModifiedTimestamp = timestamp
-    token.save()
-
-  }
+  // Update Token attributes
+  token.allBids.push(bid.id)
+  token.currentBid = bid.id
+  token.lastModifiedTimestamp = timestamp
+  token.save()
 
 }
 

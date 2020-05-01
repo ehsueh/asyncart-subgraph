@@ -101,7 +101,7 @@ export function handleBidProposed(event: BidProposed): void {
   let bid = new BidLog(tokenId.toString() + '-' + bidder.id + '-' + timestamp.toString())
   bid.timestamp = timestamp
   bid.token = token.id
-  bid.amountInEth = event.params.bidAmount
+  bid.amountInWei = event.params.bidAmount
   bid.bidder = bidder.id
   bid.isWithdrawn = false
   bid.save()
@@ -147,7 +147,7 @@ export function handleBuyPriceSet(event: BuyPriceSet): void {
   let token = loadOrCreateToken(tokenId)
   
   // Update token buy-it-now price and last modified timestamp
-  token.buyNowPriceInEth = event.params.price
+  token.buyNowPriceInWei = event.params.price
   token.lastModifiedTimestamp = timestamp
   token.save()
 
@@ -188,7 +188,7 @@ export function handleTokenSale(event: TokenSale): void {
   let sale = new SaleLog(tokenId.toString() + '-' + buyer.id + '-' + timestamp.toString())
   sale.timestamp = timestamp
   sale.token = token.id
-  sale.amountInEth = event.params.salePrice
+  sale.amountInWei = event.params.salePrice
   sale.buyer = buyer.id
   sale.seller = token.owner
   sale.save()
@@ -204,7 +204,7 @@ export function handleTokenSale(event: TokenSale): void {
   // Update platform stats
   let platform = loadOrCreatePlatform(event.address) 
   platform.totalSale = platform.totalSale + BigInt.fromI32(1)
-  platform.totalSaleInEth = platform.totalSaleInEth + event.params.salePrice
+  platform.totalSaleInWei = platform.totalSaleInWei + event.params.salePrice
   platform.save()
 
 }

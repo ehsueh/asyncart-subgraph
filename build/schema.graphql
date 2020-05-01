@@ -31,6 +31,7 @@ type Account @entity {
   id: ID!
   address: Bytes!
   isCreator: Boolean
+  lastModifiedTimestamp: BigInt!
   bids: [BidLog!]! @derivedFrom(field: "bidder")
   created: [Token!]! @derivedFrom(field: "creator")
   owns: [Token!]! @derivedFrom(field: "owner")

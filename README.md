@@ -122,3 +122,22 @@ Get recently minted tokens!
   }
 }
 ```
+
+Get a log of sales events
+```
+{
+  saleLogs(first: 10, orderBy: timestamp, orderDirection: desc) {
+		timestamp
+    amountInEth
+    token {
+      id
+    } 
+    buyer {
+      address
+    }
+    seller{
+      address
+    }
+  }
+}
+```

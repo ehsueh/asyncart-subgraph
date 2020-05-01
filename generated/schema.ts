@@ -68,8 +68,8 @@ export class Platform extends Entity {
     }
   }
 
-  get totalSaleInEth(): BigInt | null {
-    let value = this.get("totalSaleInEth");
+  get totalSaleInWei(): BigInt | null {
+    let value = this.get("totalSaleInWei");
     if (value === null) {
       return null;
     } else {
@@ -77,11 +77,11 @@ export class Platform extends Entity {
     }
   }
 
-  set totalSaleInEth(value: BigInt | null) {
+  set totalSaleInWei(value: BigInt | null) {
     if (value === null) {
-      this.unset("totalSaleInEth");
+      this.unset("totalSaleInWei");
     } else {
-      this.set("totalSaleInEth", Value.fromBigInt(value as BigInt));
+      this.set("totalSaleInWei", Value.fromBigInt(value as BigInt));
     }
   }
 
@@ -323,8 +323,8 @@ export class Token extends Entity {
     this.set("allTransfers", Value.fromStringArray(value));
   }
 
-  get buyNowPriceInEth(): BigInt | null {
-    let value = this.get("buyNowPriceInEth");
+  get buyNowPriceInWei(): BigInt | null {
+    let value = this.get("buyNowPriceInWei");
     if (value === null) {
       return null;
     } else {
@@ -332,11 +332,11 @@ export class Token extends Entity {
     }
   }
 
-  set buyNowPriceInEth(value: BigInt | null) {
+  set buyNowPriceInWei(value: BigInt | null) {
     if (value === null) {
-      this.unset("buyNowPriceInEth");
+      this.unset("buyNowPriceInWei");
     } else {
-      this.set("buyNowPriceInEth", Value.fromBigInt(value as BigInt));
+      this.set("buyNowPriceInWei", Value.fromBigInt(value as BigInt));
     }
   }
 }
@@ -474,13 +474,13 @@ export class SaleLog extends Entity {
     this.set("token", Value.fromString(value));
   }
 
-  get amountInEth(): BigInt {
-    let value = this.get("amountInEth");
+  get amountInWei(): BigInt {
+    let value = this.get("amountInWei");
     return value.toBigInt();
   }
 
-  set amountInEth(value: BigInt) {
-    this.set("amountInEth", Value.fromBigInt(value));
+  set amountInWei(value: BigInt) {
+    this.set("amountInWei", Value.fromBigInt(value));
   }
 
   get buyer(): string {
@@ -550,13 +550,13 @@ export class BidLog extends Entity {
     this.set("token", Value.fromString(value));
   }
 
-  get amountInEth(): BigInt {
-    let value = this.get("amountInEth");
+  get amountInWei(): BigInt {
+    let value = this.get("amountInWei");
     return value.toBigInt();
   }
 
-  set amountInEth(value: BigInt) {
-    this.set("amountInEth", Value.fromBigInt(value));
+  set amountInWei(value: BigInt) {
+    this.set("amountInWei", Value.fromBigInt(value));
   }
 
   get bidder(): string {

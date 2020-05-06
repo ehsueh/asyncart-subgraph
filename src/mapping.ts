@@ -220,6 +220,10 @@ export function handleTransfer(event: Transfer): void {
   // Update related accounts
   from.lastModifiedTimestamp = timestamp
   to.lastModifiedTimestamp = timestamp
+  if (from.address.toHex() == GENESIS_ADDRESS) { 
+    // Came from genesis block. "To" address is a creator.
+    to.isCreator = true
+  }
   from.save()
   to.save()
   
@@ -250,7 +254,7 @@ export function handleTransfer(event: Transfer): void {
   // Update Token ownership
   token.owner = to.id
   token.allOwners.push(to.id)
-  // token.allTransfers.push(transfer.id)
+  token.allTransfers.push(transfer.id)
   token.lastModifiedTimestamp = timestamp
   token.save()
 

@@ -2,7 +2,7 @@ type Platform @entity {
   id: ID!
   address: Bytes! 
   totalSale: BigInt
-  totalSaleInEth: BigInt
+  totalSaleInWei: BigInt
   platformFirstSalePercentage: BigInt
   platformSecondSalePercentage: BigInt
   artistSecondSalePercentage: BigInt
@@ -24,7 +24,7 @@ type Token @entity {
   lastModifiedTimestamp: BigInt!
   lastTransfer: TransferLog!
   allTransfers: [TransferLog]!
-  buyNowPriceInEth: BigInt
+  buyNowPriceInWei: BigInt
 }
 
 type Account @entity {
@@ -41,7 +41,7 @@ type SaleLog @entity {
   id: ID!
   timestamp: BigInt!
   token: Token!
-  amountInEth: BigInt!
+  amountInWei: BigInt!
   buyer: Account!
   seller: Account!
 }
@@ -50,7 +50,7 @@ type BidLog @entity {
   id: ID!
   timestamp: BigInt!
   token: Token!
-  amountInEth: BigInt!
+  amountInWei: BigInt!
   bidder: Account!
   isWithdrawn: Boolean! # whether or not the bid has been withdrawn
   withdrawnTimestamp: BigInt 

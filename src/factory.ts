@@ -29,6 +29,7 @@ export function loadOrCreateAccount(address: Address): Account {
   if (account == null) {
     account = new Account(address.toHex())
     account.address = address
+    account.isCreator = false
   }
 
   return account as Account

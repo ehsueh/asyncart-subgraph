@@ -1,6 +1,8 @@
 ## Subgraph for Async.Art
 
-### Initialzing the graph project
+Subgraph for indexing the events from the cool crypto art platform [Async.Art](https://async.art/)!!!
+
+### Initializing the Graph Project
 
 Install Graph CLI:
 
@@ -28,7 +30,7 @@ graph init \
 ehsueh/async-art-subgraph
 ```
 
-### Add access token 
+### Add Access Token 
 
 1. Set up a Graph Explorer account and retrieve the token from the [dashboard](https://thegraph.com/explorer/dashboard) 
 2. Save the access token.
